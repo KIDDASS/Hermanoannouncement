@@ -1,0 +1,17 @@
+name: Announcement to Discord
+
+   on:
+     repository_dispatch:
+       types: [announcement-update]
+
+   jobs:
+     send-announcement:
+       runs-on: ubuntu-latest
+       steps:
+         - name: Send to Discord
+           env:
+             WEBHOOK_URL: ${{ secrets.ANNOUNCEMENT_WEBHOOK }}
+           run: |
+             curl -X POST "$WEBHOOK_URL" \
+               -H "Content-Type: application/json" \
+               -d '${{ toJson(github.event.client_payload) }}'
